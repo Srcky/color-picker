@@ -119,6 +119,7 @@
         )
           .toString(16)
           .slice(1)}`;
+
         return [hex, alpha];
       }
 
@@ -127,7 +128,25 @@
        * @param tuple [string, float]
        * @return string an rgba() color, it defaults to white
        */
-      function hexToRgba(hex, alpha = 100) {}
+      function hexToRgba(hex, alpha = 100) {
+        //removing # and creating an array of values
+        const rgbaArray = hex.split('').slice(1);
+
+        // defaults to white if no color or wrong values are passed
+        if (rgbaArray.length !== 6) return 'rgba(255,255,255,1)';
+
+        //creating pairs of values and converting them to hex
+        const rgbaValues = rgbaArray
+          .flatMap((currentValue, index, array) =>
+            index % 2 ? [] : parseInt(currentValue + array[index + 1], 16)
+          )
+          .toString();
+
+        // converting alpha to number, dividing it by 100 and then limiting decimals to 6
+        const alphaValue = +(parseFloat(alpha) / 100).toFixed(6);
+
+        return `rgba(${rgbaValues},${alphaValue})`;
+      }
 
       // this is not really required for the tests, it's just useful if you want
       (function init() {})();
