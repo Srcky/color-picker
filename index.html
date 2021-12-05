@@ -95,6 +95,13 @@
 
       const onEveryFrame = () => {
         // this can be run on "every frame"
+        chipColorChange();
+      };
+
+      /**
+       * Clicking on chips changes color and opacity and reflects that on the preview section
+       */
+      function chipColorChange() {
         Array.from(chip).forEach(elem => {
           elem.addEventListener('click', e => {
             const rgbaToHexConverter = rgbaToHex(e.target.dataset.rgba);
@@ -106,7 +113,7 @@
             alphaValueDisplay.innerText = rgbaToHexConverter[1];
           });
         });
-      };
+      }
 
       /**
        * Converts rgba string "rgba(255,255,255,1)" into separate hex and aplha (percentual) values
