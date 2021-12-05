@@ -96,6 +96,8 @@
       const onEveryFrame = () => {
         // this can be run on "every frame"
         chipColorChange();
+        colorPickerChange();
+        alphaSliderChange();
       };
 
       /**
@@ -104,15 +106,50 @@
       function chipColorChange() {
         Array.from(chip).forEach(elem => {
           elem.addEventListener('click', e => {
-            const rgbaToHexConverter = rgbaToHex(e.target.dataset.rgba);
-            component.dataset.color = e.target.dataset.rgba;
-            previewElement.style.backgroundColor = e.target.dataset.rgba;
-            colorInput.value = rgbaToHexConverter[0];
-            colorValueDisplay.innerText = rgbaToHexConverter[0];
-            alphaInput.value = rgbaToHexConverter[1];
-            alphaValueDisplay.innerText = rgbaToHexConverter[1];
+            changeColorsOnElements(e.target.dataset.rgba, true);
           });
         });
+      }
+
+      /**
+       * Clicking on color picker reflect changes on the preview section
+       */
+      function colorPickerChange() {
+        colorInput.addEventListener('change', e => {
+          component.dataset.color = e.target.value;
+          previewElement.style.backgroundColor = e.target.value;
+          colorInput.value = e.target.value;
+          colorValueDisplay.innerText = e.target.value;
+          alphaValueDisplay.innerText = alphaInput.value;
+        });
+      }
+
+      /**
+       * Clicking on alpha slider reflect changes on the preview section
+       */
+      function alphaSliderChange() {
+        alphaInput.addEventListener('change', e => {
+          const convertColors = hexToRgba(colorInput.value, e.target.value);
+          component.dataset.color = colorInput.value;
+          previewElement.style.backgroundColor = convertColors;
+          colorValueDisplay.innerText = colorInput.value;
+          alphaValueDisplay.innerText = e.target.value;
+        });
+      }
+
+      /**
+       * Changes from all interfaces are reflected in the preview section
+       */
+      function changeColorsOnElements(elementColorValue, covertToHex) {
+        const convertColors = covertToHex
+          ? rgbaToHex(elementColorValue)
+          : hexToRgba(elementColorValue);
+        component.dataset.color = elementColorValue;
+        previewElement.style.backgroundColor = elementColorValue;
+        colorInput.value = convertColors[0];
+        colorValueDisplay.innerText = convertColors[0];
+        alphaInput.value = convertColors[1];
+        alphaValueDisplay.innerText = convertColors[1];
       }
 
       /**
@@ -169,7 +206,9 @@
       }
 
       // this is not really required for the tests, it's just useful if you want
-      (function init() {})();
+      (function init() {
+        onEveryFrame();
+      })();
     </script>
 
     <!-- styles are intentionally at the end to be out of the way -->
@@ -241,10 +280,10 @@
         cursor: pointer;
       }
     </style>
-    <!-- <div id="qunit"></div>
+    <div id="qunit"></div>
     <div id="qunit-fixture"></div>
     <script src="node_modules/qunit/qunit/qunit.js"></script>
     <script src="spec/colors.spec.js"></script>
-    <script src="spec/component.spec.js"></script> -->
+    <script src="spec/component.spec.js"></script>
   </body>
 </html>
