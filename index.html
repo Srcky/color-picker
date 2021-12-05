@@ -109,6 +109,8 @@
 
         // converting alpha to number, multiplying it by 100 to get the precentages and then limiting decimals to 3
         const alpha = +(parseFloat(color[3]) * 100).toFixed(3);
+
+        // using bitwise operator and radix to create hexadecimal representation
         const hex = `#${(
           (1 << 24) +
           (parseInt(color[0]) << 16) +
