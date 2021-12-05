@@ -91,8 +91,21 @@
       const colorValueDisplay = $('.color-value-display');
       const previewElement = $('.preview');
 
+      const chip = document.getElementsByClassName('chip');
+
       const onEveryFrame = () => {
         // this can be run on "every frame"
+        Array.from(chip).forEach(elem => {
+          elem.addEventListener('click', e => {
+            const rgbaToHexConverter = rgbaToHex(e.target.dataset.rgba);
+            component.dataset.color = e.target.dataset.rgba;
+            previewElement.style.backgroundColor = e.target.dataset.rgba;
+            colorInput.value = rgbaToHexConverter[0];
+            colorValueDisplay.innerText = rgbaToHexConverter[0];
+            alphaInput.value = rgbaToHexConverter[1];
+            alphaValueDisplay.innerText = rgbaToHexConverter[1];
+          });
+        });
       };
 
       /**
@@ -221,10 +234,10 @@
         cursor: pointer;
       }
     </style>
-    <div id="qunit"></div>
+    <!-- <div id="qunit"></div>
     <div id="qunit-fixture"></div>
     <script src="node_modules/qunit/qunit/qunit.js"></script>
     <script src="spec/colors.spec.js"></script>
-    <script src="spec/component.spec.js"></script>
+    <script src="spec/component.spec.js"></script> -->
   </body>
 </html>
