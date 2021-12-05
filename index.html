@@ -94,7 +94,6 @@
       const chip = document.getElementsByClassName('chip');
 
       const onEveryFrame = () => {
-        // this can be run on "every frame"
         chipColorChange();
         colorPickerChange();
         alphaSliderChange();
@@ -116,40 +115,42 @@
        */
       function colorPickerChange() {
         colorInput.addEventListener('change', e => {
-          component.dataset.color = e.target.value;
-          previewElement.style.backgroundColor = e.target.value;
-          colorInput.value = e.target.value;
-          colorValueDisplay.innerText = e.target.value;
-          alphaValueDisplay.innerText = alphaInput.value;
+          changeColorsOnElements(e.target.value, false);
         });
       }
 
       /**
-       * Clicking on alpha slider reflect changes on the preview section
+       * Moving alpha slider reflects changes on the preview section
        */
       function alphaSliderChange() {
         alphaInput.addEventListener('change', e => {
-          const convertColors = hexToRgba(colorInput.value, e.target.value);
-          component.dataset.color = colorInput.value;
-          previewElement.style.backgroundColor = convertColors;
-          colorValueDisplay.innerText = colorInput.value;
-          alphaValueDisplay.innerText = e.target.value;
+          changeColorsOnElements(colorInput.value, false, e.target.value);
         });
       }
 
       /**
        * Changes from all interfaces are reflected in the preview section
        */
-      function changeColorsOnElements(elementColorValue, covertToHex) {
+      function changeColorsOnElements(
+        elementColorValue,
+        covertToHex,
+        transparency
+      ) {
         const convertColors = covertToHex
           ? rgbaToHex(elementColorValue)
-          : hexToRgba(elementColorValue);
+          : hexToRgba(elementColorValue, transparency);
+        if (covertToHex) {
+          colorInput.value = convertColors[0];
+          colorValueDisplay.innerText = convertColors[0];
+          alphaInput.value = convertColors[1];
+          alphaValueDisplay.innerText = convertColors[1];
+          previewElement.style.backgroundColor = elementColorValue;
+        } else {
+          colorValueDisplay.innerText = elementColorValue;
+          alphaValueDisplay.innerText = transparency || alphaInput.value;
+          previewElement.style.backgroundColor = convertColors;
+        }
         component.dataset.color = elementColorValue;
-        previewElement.style.backgroundColor = elementColorValue;
-        colorInput.value = convertColors[0];
-        colorValueDisplay.innerText = convertColors[0];
-        alphaInput.value = convertColors[1];
-        alphaValueDisplay.innerText = convertColors[1];
       }
 
       /**
@@ -280,10 +281,10 @@
         cursor: pointer;
       }
     </style>
-    <div id="qunit"></div>
+    <!-- <div id="qunit"></div>
     <div id="qunit-fixture"></div>
     <script src="node_modules/qunit/qunit/qunit.js"></script>
     <script src="spec/colors.spec.js"></script>
-    <script src="spec/component.spec.js"></script>
+    <script src="spec/component.spec.js"></script> -->
   </body>
 </html>
